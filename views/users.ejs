@@ -1,0 +1,37 @@
+<div class="container container_vid1">
+    <div id="spinner" class="text-center" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div id="gallery" class="row g-3"></div>
+
+    <nav class="d-flex justify-content-center mt-0">
+        <ul class="pagination" id="pagination"></ul>
+    </nav>
+</div>
+
+<script src="/js/users-gallery.js"></script>
+
+<style>
+    #gallery.row {
+        --bs-gutter-y: 0.5rem;
+        --bs-gutter-x: 0.5rem;
+    }
+
+    .user-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .user-card {
+        background: white;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    }
+</style>

@@ -1,0 +1,51 @@
+<div id="post-<%= reply.num %>" class="post-block bg-white shadow-sm">
+
+    <div class="post-header d-flex justify-content-between align-items-center">
+
+        <div class="d-flex align-items-center gap-2">
+            <div class="post-number badge bg-secondary reply-ref" data-ref="<%= reply.num %>">
+                <%= reply.num %>
+            </div>
+
+            <div>
+                <span class="forum-user-link" onclick="openForumUser('<%= reply.userId._id %>')">
+                    <%= reply.userName %>
+                </span>
+                <small class="text-muted">— <%= new Date(reply.createdAt).toLocaleString() %></small>
+            </div>
+        </div>
+
+        <div class="post-actions">
+            <% if (user && (user.id===reply.userId._id.toString() || user.role==="admin" )) { %>
+                <button class="icon-btn" onclick="editReply('<%= reply._id %>', '<%= reply.num %>')">
+                    <img src="/image/icons/edit.svg">
+                </button>
+                <% } %>
+
+                    <% if (user && user.role==="admin" ) { %>
+                        <button class="icon-btn" onclick="blockReply('<%= reply._id %>', '<%= reply.num %>')">
+                            <img src="/image/icons/delete.svg">
+                        </button>
+                        <% } %>
+        </div>
+
+    </div>
+
+    <div class="post-content mt-2">
+        <% if (reply.isBlocked) { %>
+            <p class="text-danger fw-bold">
+                <%= reply.blockedMessage %>
+            </p>
+            <% } else { %>
+                <p>
+                    <%- reply.content.replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>'
+                        ) %>
+                </p>
+
+                <% if (reply.photo) { %>
+                    <img src="<%= reply.photo %>" class="post-photo mt-2">
+                    <% } %>
+                        <% } %>
+    </div>
+
+</div>

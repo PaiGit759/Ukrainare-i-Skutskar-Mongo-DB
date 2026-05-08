@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./head.ejs') %>
+
+    <body>
+
+        <%- include('./nav.ejs') %>
+
+            <main class="page-main">
+                <%- body %>
+            </main>
+
+            <%- include('./footer.ejs') %>
+
+
+                <script>
+
+                    function goBack() {
+                        const raw = localStorage.getItem("returnTo");
+
+                        if (!raw) {
+                            history.back();
+                            return;
+                        }
+
+                        let data;
+                        try {
+                            data = JSON.parse(raw);
+                        } catch (e) {
+                            history.back();
+                            return;
+                        }
+
+                        const url = `${data.url}?page=${data.page}`;
+
+                        // Restoring scrolling after returning
+                        localStorage.setItem("restoreScroll", data.scroll);
+                        window.location.href = url;
+                    }
+
+                </script>
+
+    </body>
+
+</html>

@@ -1,0 +1,25 @@
+<form action="/forum/reply/edit" method="POST" enctype="multipart/form-data" style="margin-top: 30px;">
+
+    <input type="hidden" name="id" value="<%= reply._id %>">
+    <input type="hidden" name="postId" value="<%= reply.postId %>">
+
+    <textarea name="content" class="form-control mb-3" rows="5" required>
+<%= reply.content %>
+    </textarea>
+
+    <%- include("photo-upload", { currentPhoto: reply.photo }) %>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/forum/post?id=<%= reply.postId %>" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+
+
+
+<script>
+    function editPost(id) {
+        window.location.href = `/forum/edit?id=${id}`;
+    }
+
+</script>

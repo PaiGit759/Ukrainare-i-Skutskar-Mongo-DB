@@ -1,0 +1,73 @@
+<% answers.forEach((a, index)=> { %>
+
+    <div id="post-<%= index + 1 %>" class="post-block bg-white shadow-sm">
+
+        <div class="post-header d-flex justify-content-between align-items-center">
+
+            <div class="d-flex align-items-center gap-2">
+
+                <div class="post-number badge bg-secondary reply-ref" data-ref="<%= index + 1 %>">
+                    <%= index + 1 %>
+                </div>
+
+                <div>
+                    <% if (a.userId && a.userId._id) { %>
+                        <span class="forum-user-link" onclick="openForumUser('<%= a.userId._id %>')">
+                            <%= a.userName %>
+                        </span>
+                        <% } else { %>
+                            <span class="text-muted">Unknown</span>
+                            <% } %>
+
+                                <small class="text-muted">— <%= new Date(a.createdAt).toLocaleString() %></small>
+                </div>
+
+            </div>
+
+            <div class="post-actions">
+                <% if (user && a.userId && a.userId._id && (user.id===a.userId._id.toString() || user.role==="admin" ))
+                    { %>
+                    <button class="icon-btn" onclick="editReply('<%= a._id %>', '<%= index + 1 %>')">
+                        <img src="/image/icons/edit.svg">
+                    </button>
+                    <% } %>
+
+                        <% if (user && user.role==="admin" ) { %>
+                            <button class="icon-btn" onclick="blockReply('<%= a._id %>', '<%= index + 1 %>')">
+                                <img src="/image/icons/delete.svg">
+                            </button>
+                            <% } %>
+            </div>
+
+        </div>
+
+        <div class="post-content mt-2">
+            <% if (a.isBlocked) { %>
+                <p class="text-danger fw-bold">
+                    <%= a.blockedMessage %>
+                </p>
+                <% } else { %>
+                    <p>
+                        <%- a.content.replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>'
+                            ) %>
+                    </p>
+
+                    <% if (a.photo) { %>
+                        <img src="<%= a.photo %>" class="post-photo mt-2">
+                        <% } %>
+                            <% } %>
+        </div>
+
+        <!-- Обратные ссылки -->
+        <% if (replyLinks[index + 1] && replyLinks[index + 1].length> 0) { %>
+            <div class="mt-2 small">
+                <div class="fw-bold mb-1">Answers:</div>
+                <% replyLinks[index + 1].forEach(num=> { %>
+                    <div class="reply-back-link" data-target="post-<%= num %>">(<%= num %>)</div>
+                    <% }) %>
+            </div>
+            <% } %>
+
+    </div>
+
+    <% }) %>

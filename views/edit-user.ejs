@@ -1,0 +1,104 @@
+<div class="container mt-4">
+
+    <form action="/edit-user" method="POST" enctype="multipart/form-data" class="row g-3" style="padding-top: 50px;">
+
+        <input type="hidden" name="id" value="<%= profileUser._id %>">
+
+        <div class="col-md-6">
+            <label class="form-label">Username</label>
+            <input type="text" name="name" class="form-control" value="<%= profileUser.name %>" required>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="<%= profileUser.email %>">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">First Name</label>
+            <input type="text" name="firstName" class="form-control" value="<%= profileUser.firstName %>">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="lastName" class="form-control" value="<%= profileUser.lastName %>">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Birth Date</label>
+            <input type="date" name="birthDate" class="form-control" value="<%= profileUser.birthDate %>">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Gender</label>
+            <input type="text" name="gender" class="form-control" value="<%= profileUser.gender %>">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Place of Birth</label>
+            <input type="text" name="birthPlace" class="form-control" value="<%= profileUser.birthPlace %>">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Current Residence</label>
+            <input type="text" name="residence" class="form-control" value="<%= profileUser.residence %>">
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">About You</label>
+            <textarea name="content" class="form-control" rows="4"><%= profileUser.content %></textarea>
+        </div>
+
+        <div class="col-12 mb-3">
+            <label class="form-label">Photo</label>
+
+
+            <div class="d-flex align-items-center gap-2 flex-row flex-wrap">
+
+                <input type="file" id="foto" name="foto" accept="image/*"
+                    style="width:0.1px; height:0.1px; opacity:0; overflow:hidden; position:absolute; z-index:-1;"
+                    onchange="previewPhoto(event)">
+                <label for="foto" class="btn btn-primary">Upload Image</label>
+
+
+                <input type="text" id="file-name" class="form-control" placeholder="No file chosen" readonly>
+            </div>
+
+
+
+            <div class="mt-3">
+                <img id="preview" src="<%= profileUser.foto || '/image/UndefinedUser.jpg' %>" alt="Preview"
+                    class="img-fluid rounded" style="max-height:200px;">
+            </div>
+        </div>
+
+        <div class="col-12 text-center mt-3" style="padding-bottom: 50px;">
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            <a href="/profile?id=<%= profileUser._id %>" class="btn btn-secondary">Cancel</a>
+        </div>
+
+
+    </form>
+</div>
+
+
+<script>
+    const fileInput = document.getElementById('foto');
+    const fileNameDisplay = document.getElementById('file-name');
+    const previewImg = document.getElementById('preview');
+
+    function previewPhoto(event) {
+        if (fileInput.files.length > 0) {
+            fileNameDisplay.value = fileInput.files[0].name;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImg.src = e.target.result;
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            fileNameDisplay.value = 'No file chosen';
+            previewImg.src = "<%= profileUser.foto || '/image/UndefinedUser.jpg' %>";
+        }
+    }
+</script>

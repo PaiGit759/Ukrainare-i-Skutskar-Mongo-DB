@@ -1,0 +1,47 @@
+<div class="col-12 mb-3 photo-upload-wrapper">
+    <label class="form-label">Photo (optional)</label>
+
+    <div class="d-flex align-items-center gap-2 flex-row flex-wrap">
+
+        <input type="file" id="foto-<%= currentPhoto ? 'edit' : 'new' %>" name="foto" class="visually-hidden"
+            accept="image/*" onchange="previewPhoto(event)">
+
+        <label for="foto-<%= currentPhoto ? 'edit' : 'new' %>" class="btn btn-primary">
+            Upload Image
+        </label>
+
+        <input type="text" id="file-name-<%= currentPhoto ? 'edit' : 'new' %>" class="form-control"
+            placeholder="No file chosen" readonly>
+
+        <img id="preview-<%= currentPhoto ? 'edit' : 'new' %>" src="<%= currentPhoto || '/image/UndefinedUser.jpg' %>"
+            class="img-fluid rounded" style="max-height:200px; object-fit:contain;">
+    </div>
+</div>
+
+
+
+<script>
+    function previewPhoto(event) {
+        const fileInput = event.target;
+
+        // Ищем контейнер ТОЛЬКО по одному классу
+
+        const wrapper = fileInput.closest(".photo-upload-wrapper");
+
+        const fileNameDisplay = wrapper.querySelector('input[id^="file-name"]');
+        const previewImg = wrapper.querySelector('img[id^="preview"]');
+
+        if (fileInput.files.length > 0) {
+            fileNameDisplay.value = fileInput.files[0].name;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImg.src = e.target.result;
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            fileNameDisplay.value = 'No file chosen';
+            previewImg.src = "/image/UndefinedUser.jpg";
+        }
+    }
+</script>

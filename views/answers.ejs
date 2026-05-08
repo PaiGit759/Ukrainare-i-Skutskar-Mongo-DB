@@ -1,0 +1,69 @@
+<% answers.forEach((a, index)=> { %>
+
+    <div id="post-<%= a._id %>" class="post-block bg-white shadow-sm">
+
+        <div class="post-header">
+            <div class="post-number badge bg-secondary">
+                <%= index + 1 %>
+            </div>
+
+            <div class="post-user">
+                <% if (a.userId && a.userId._id) { %>
+                    <span class="forum-user-link" onclick="openForumUser('<%= a.userId._id %>')">
+                        <%= a.userName %>
+                    </span>
+                    <% } else { %>
+                        <span class="text-muted">Unknown</span>
+                        <% } %>
+
+                            <small class="text-muted">— <%= new Date(a.createdAt).toLocaleString() %></small>
+            </div>
+
+            <div class="post-actions">
+
+                <% const replyId=a._id; const replyNum=index + 1; const replyUserId=(a.userId && a.userId._id &&
+                    a.userId._id.toString()) || (a.userId && a.userId.toString()) || null; const isReplyAuthor=user &&
+                    user.id && replyUserId && user.id.toString()===replyUserId; %>
+
+                    <% if (isReplyAuthor || (user && user.role==="admin" )) { %>
+                        <button class="icon-btn" data-id="<%= replyId %>" data-num="<%= replyNum %>"
+                            onclick="editReply(this.dataset.id, this.dataset.num)">
+                            <img src="/image/icons/edit.svg">
+                        </button>
+                        <% } %>
+
+                            <% if (user && user.role==="admin" ) { %>
+                                <button class="icon-btn" onclick="blockReply('<%= a._id %>')" title="Block reply">
+                                    <img src="/image/icons/delete.svg">
+                                </button>
+                                <% } %>
+
+            </div>
+        </div>
+
+        <div class="post-content">
+
+            <% if (a.isBlocked) { %>
+
+                <p class="text-danger fw-bold">
+                    <%= a.blockedMessage %>
+                </p>
+
+                <% } else { %>
+
+                    <p>
+                        <%- a.content.replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>'
+                            ) %>
+                    </p>
+
+                    <% if (a.photo) { %>
+                        <img src="<%= a.photo %>" class="post-photo">
+                        <% } %>
+
+                            <% } %>
+
+        </div>
+
+    </div>
+
+    <% }) %>

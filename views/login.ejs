@@ -1,0 +1,98 @@
+<div class="container my-5">
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+
+      <div class="card-body">
+
+        <div class="profile-wrapper text-center" style="background-color: #cfe7ed;">
+          <div style="margin: 50px;">
+
+            <form id="add-post" method="post" action="/login">
+
+              <div class="mb-3">
+                <label class="form-label">User
+                  <input type="text" name="user" id="user" class="form-control">
+                </label>
+              </div>
+
+              <div class="mb-3 password-center">
+                <label class="form-label">Password</label>
+                <div class="input-group password-narrow">
+                  <input type="password" name="password" id="password" class="form-control">
+                  <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-button">
+                <input type="submit" value="Submit" class="btn btn-primary">
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script>
+  const passwordInput = document.getElementById('password');
+  const togglePassword = document.getElementById('togglePassword');
+
+  togglePassword.addEventListener('click', () => {
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+
+    togglePassword.innerHTML = isHidden
+      ? '<i class="bi bi-eye-slash"></i>'
+      : '<i class="bi bi-eye"></i>';
+  });
+</script>
+
+<!-- <script src="/js/userfoto.js"></script> -->
+
+<style>
+  /*           .home {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-size: 12px;
+            background-color: #cfe7ed;
+            color: black;
+            padding-top: 0;
+          } */
+
+  .profile-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .password-narrow {
+    max-width: 300px;
+    /* ширина поля */
+  }
+
+  .password-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* центрирует блок */
+  }
+</style>

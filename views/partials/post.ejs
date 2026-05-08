@@ -1,0 +1,42 @@
+<div id="post-0" class="post-block bg-white shadow-sm">
+
+    <div class="post-header d-flex justify-content-between align-items-center">
+
+        <div>
+            <span class="forum-user-link" onclick="openForumUser('<%= post.userId %>')">
+                <%= post.userName %>
+            </span>
+            <small class="text-muted">— <%= new Date(post.createdAt).toLocaleString() %></small>
+        </div>
+
+        <div class="post-actions">
+            <% if (user && (user.id===post.userId.toString() || user.role==="admin" )) { %>
+                <button class="icon-btn" onclick="editPost('<%= post._id %>')">
+                    <img src="/image/icons/edit.svg">
+                </button>
+                <% } %>
+
+                    <% if (user && user.role==="admin" ) { %>
+                        <button class="icon-btn" onclick="blockPost('<%= post._id %>')">
+                            <img src="/image/icons/delete.svg">
+                        </button>
+                        <% } %>
+        </div>
+
+    </div>
+
+    <div class="post-content mt-2">
+        <% if (post.isBlocked) { %>
+            <p class="text-danger fw-bold">
+                <%= post.blockedMessage %>
+            </p>
+            <% } else { %>
+                <p><%- post.content %></p>
+
+                <% if (post.photo) { %>
+                    <img src="<%= post.photo %>" class="post-photo mt-2">
+                    <% } %>
+                        <% } %>
+    </div>
+
+</div>
