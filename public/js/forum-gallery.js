@@ -202,7 +202,7 @@ function editPost(id) {
 
 
 function blockPost(id) {
-    if (!confirm("Заблокировать пост?")) return;
+    if (!confirm("Block post?")) return;
 
     fetch(`/forum/block?id=${id}`, {
         method: "POST"

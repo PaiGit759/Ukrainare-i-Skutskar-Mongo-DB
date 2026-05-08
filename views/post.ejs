@@ -29,7 +29,7 @@
 
             <div class="post-actions">
 
-                <% if (user && (user.id==post.userId || user.role==="admin" )) { %>
+                <% if (user && (user.id==post.userId._id || user.role==="admin" )) { %>
                     <button class="icon-btn" onclick="editPost('<%= post._id %>')">
                         <img src="/image/icons/edit.svg">
                     </button>
@@ -212,7 +212,7 @@
     }
 
     function blockPost(id) {
-        if (!confirm("Заблокировать пост?")) return;
+        if (!confirm("Block post?")) return;
 
         fetch(`/forum/block?id=${id}`, { method: "POST" })
             .then(res => res.json())
