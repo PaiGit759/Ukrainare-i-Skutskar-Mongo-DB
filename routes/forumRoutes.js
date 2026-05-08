@@ -2,6 +2,10 @@ import express from "express";
 import * as forum from "../controllers/forumController.js";
 import upload from "../helpers/multer.js";
 
+import Post from "../models/Post.js";
+import Answer from "../models/Answer.js";
+
+
 const router = express.Router();
 
 // Forum home page
@@ -43,5 +47,33 @@ router.get("/post/answers", forum.getAnswersPartial);
 router.get("/post/one", forum.getPostPartial);
 
 router.get("/reply/one", forum.getReplyPartial);
+
+
+router.get("/check-updates", async (req, res) => {
+    const count = await Post.countDocuments();
+    const lastPost = await Post.findOne().sort({ createdAt: -1 });
+
+    res.json({
+        count,
+        lastPostId: lastPost?._id,
+        lastCreatedAt: lastPost?.createdAt
+    });
+});
+
+
+
+router.get("/check-replies", async (req, res) => {
+    const postId = req.query.postId;
+
+    const count = await Answer.countDocuments({ postId });
+    const lastReply = await Answer.findOne({ postId }).sort({ createdAt: -1 });
+
+    res.json({
+        count,
+        lastReplyId: lastReply?._id,
+        lastCreatedAt: lastReply?.createdAt
+    });
+});
+
 
 export default router;

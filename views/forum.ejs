@@ -38,10 +38,7 @@
     id: "<%= user?.id %>",
     role: "<%= user?.role %>"
   };
-</script>
 
-
-<script>
   document.addEventListener("DOMContentLoaded", () => {
     const scroll = localStorage.getItem("restoreScroll");
     if (scroll) {
@@ -51,6 +48,34 @@
       localStorage.removeItem("restoreScroll");
     }
   });
+
+  async function checkForumUpdates() {
+    try {
+      const res = await fetch("/forum/check-updates");
+      const data = await res.json();
+
+      const oldCount = Number(localStorage.getItem("forumCount") || 0);
+
+      if (data.count !== oldCount) {
+        location.reload();
+      }
+
+      localStorage.setItem("forumCount", data.count);
+    } catch (err) {
+      console.log("Update check failed:", err);
+    }
+  }
+
+  // Проверяем каждые 60 секунд
+  setInterval(checkForumUpdates, 60000);
+
+  // Сохраняем текущее количество при загрузке
+  document.addEventListener("DOMContentLoaded", () => {
+    const initialCount = document.querySelectorAll(".post-item").length;
+    localStorage.setItem("forumCount", initialCount);
+  });
+
+
 </script>
 
 

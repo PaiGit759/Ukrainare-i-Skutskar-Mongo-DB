@@ -345,6 +345,24 @@
         document.getElementById("post-0").outerHTML = html;
     }
 
+    let lastReplyCount = <%= replyCount %>;
+
+    async function checkReplies() {
+        const postId = "<%= post._id %>";
+
+        const res = await fetch(`/forum/check-replies?postId=${postId}`);
+        const data = await res.json();
+
+        if (data.count !== lastReplyCount) {
+            reloadAnswers();
+            lastReplyCount = data.count;
+        }
+    }
+
+    // Проверяем каждые 10 секунд
+    setInterval(checkReplies, 10000);
+
+
 </script>
 
 <style>
