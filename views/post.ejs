@@ -247,12 +247,10 @@
                     </p>
                 `;
                 } else {
-                    // reloadAnswers();
                     reloadSingleReply(id);
                 }
             });
     }
-
 
     async function reloadSingleReply(id) {
         const res = await fetch(`/forum/reply/one?id=${id}`);
@@ -272,7 +270,7 @@
     }
 
     function blockReply(id, num) {
-        if (!confirm("Заблокировать ответ?")) return;
+        if (!confirm("Block reply?")) return;
 
         fetch(`/forum/reply/block?id=${id}`, { method: "POST" })
             .then(res => res.json())
@@ -313,7 +311,7 @@
         });
     });
 
-    // Переходы по ссылкам (N)
+    // Link clicks (N)
     document.addEventListener("click", (e) => {
         if (e.target.classList.contains("reply-link") ||
             e.target.classList.contains("reply-back-link")) {
@@ -329,14 +327,14 @@
         }
     });
 
-    // AJAX обновление одного ответа
+    // AJAX updating one answer
     async function reloadSingleReply(id, num) {
         const res = await fetch(`/forum/reply/one?id=${id}&num=${num}`);
         const html = await res.text();
         document.getElementById(`post-${num}`).outerHTML = html;
     }
 
-    // AJAX обновление главного поста
+    // AJAX updating the main post
     async function reloadPost() {
         const url = new URL(window.location.href);
         const postId = url.searchParams.get("id");
@@ -346,12 +344,6 @@
 
         document.getElementById("post-0").outerHTML = html;
     }
-
-
-
-
-
-
 
 </script>
 

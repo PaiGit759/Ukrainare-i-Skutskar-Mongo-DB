@@ -49,7 +49,7 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URL,
       collectionName: "sessions",
-      ttl: 60 * 60 * 24 * 30, // 30 дней
+      ttl: 60 * 60 * 24 * 30, // 30 days
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 30,
@@ -72,8 +72,6 @@ app.use((req, res, next) => {
 //  Static files
 // =========================
 
-//app.use(express.static(path.join(process.cwd(), "public")));
-
 app.use(express.static(path.join(process.cwd(), "public"), {
   setHeaders: (res, path) => {
     if (path.endsWith(".svg")) {
@@ -81,9 +79,6 @@ app.use(express.static(path.join(process.cwd(), "public"), {
     }
   }
 }));
-
-//console.log("STATIC PATH:", path.join(process.cwd(), "public"));
-
 
 // =========================
 //  Routes

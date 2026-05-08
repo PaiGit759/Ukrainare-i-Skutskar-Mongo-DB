@@ -2,9 +2,7 @@ import express from "express";
 import * as forum from "../controllers/forumController.js";
 import upload from "../helpers/multer.js";
 
-
 const router = express.Router();
-
 
 // Forum home page
 router.get("/", (req, res) => {
@@ -14,22 +12,20 @@ router.get("/", (req, res) => {
     });
 });
 
-// Создать пост
+// Create a post
 router.get("/add", forum.addForm);
-//router.post("/add", upload.single("photo"), forum.addPost);
 router.post("/add", upload.single("foto"), forum.addPost);
 
-// Количество постов
+// Number of posts
 router.get("/count", forum.getCount);
 
-// Пагинация
+// Pagination
 router.get("/page", forum.getPage);
 
-// Просмотр поста
+// View post
 router.get("/post", forum.viewPost);
 
-// Добавить ответ
-//router.post("/reply", upload.single("photo"), forum.addReply);
+// Add a reply
 router.post("/reply", upload.single("foto"), forum.addReply);
 
 router.get("/edit", forum.viewEditForm);
@@ -44,12 +40,8 @@ router.post("/reply/block", forum.blockReply);
 
 router.get("/post/answers", forum.getAnswersPartial);
 
-//res.render("partials/post", { post, user, replyLinks });
-
 router.get("/post/one", forum.getPostPartial);
 
 router.get("/reply/one", forum.getReplyPartial);
-
-
 
 export default router;
