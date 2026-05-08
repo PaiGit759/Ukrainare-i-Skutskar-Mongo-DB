@@ -6,7 +6,7 @@ import upload from "../helpers/multer.js";
 const router = express.Router();
 
 
-// Главная страница форума
+// Forum home page
 router.get("/", (req, res) => {
     res.render("forum", {
         title: "Forum",
