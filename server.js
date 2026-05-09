@@ -41,6 +41,8 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 //  Sessions
 // =========================
 
+app.set("trust proxy", 1);
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "secret123",
@@ -54,7 +56,7 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 30,
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
     },
   })
 );

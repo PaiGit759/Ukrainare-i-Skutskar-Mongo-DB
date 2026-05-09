@@ -1,0 +1,7 @@
+MONGO_URL=mongodb+srv://paiuser:PaiUser!!!@cluster0.voie2ik.mongodb.net/pai759db?appName=Cluster0
+
+R2_ACCESS_KEY=23c46aa1e618bc17348c37227fd87806
+R2_SECRET_KEY=2772be7191437107d463f1cd68477156f0e66e5d0bd5feeb5c63a70cbff47c11
+R2_ENDPOINT=https://dc6a1618ffeb6bd776571d1ec979733d.r2.cloudflarestorage.com
+R2_BUCKET=pai-images
+R2_PUBLIC_URL=https://pub-c564d414b25b474194f8012e2f951e12.r2.dev
