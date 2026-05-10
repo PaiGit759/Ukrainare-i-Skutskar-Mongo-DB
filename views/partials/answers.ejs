@@ -4,7 +4,31 @@
 
         <div class="post-header d-flex justify-content-between align-items-center">
 
+            <!-- <div class="d-flex align-items-center gap-2">
+
+                <div class="post-number badge bg-secondary reply-ref" data-ref="<%= index + 1 %>">
+                    <%= index + 1 %>
+                </div>
+
+                <div>
+                    <% if (a.userId && a.userId._id) { %>
+                        <span class="forum-user-link" onclick="openForumUser('<%= a.userId._id %>')">
+                            <%= a.userName %>
+                        </span>
+                        <% } else { %>
+                            <span class="text-muted">Unknown</span>
+                            <% } %>
+
+                                <small class="text-muted">— <%= new Date(a.createdAt).toLocaleString() %></small>
+                </div>
+
+            </div> -->
+
+
             <div class="d-flex align-items-center gap-2">
+
+                <!-- <img src="<%= a.userFoto || '/image/UndefinedUser.jpg' %>" class="post-avatar"
+                    style="width:40px; height:40px; border-radius:50%; object-fit:cover;"> -->
 
                 <div class="post-number badge bg-secondary reply-ref" data-ref="<%= index + 1 %>">
                     <%= index + 1 %>
@@ -24,7 +48,8 @@
 
             </div>
 
-            <div class="post-actions">
+
+            <!-- <div class="post-actions">
                 <% if (user && a.userId && a.userId._id && (user.id===a.userId._id.toString() || user.role==="admin" ))
                     { %>
                     <button class="icon-btn" onclick="editReply('<%= a._id %>', '<%= index + 1 %>')">
@@ -37,7 +62,31 @@
                                 <img src="/image/icons/delete.svg">
                             </button>
                             <% } %>
+            </div> -->
+
+
+            <div class="post-actions d-flex align-items-center gap-2">
+
+                <!-- Аватар пользователя -->
+                <img src="<%= a.userFoto || '/image/UndefinedUser.jpg' %>"
+                    onclick="openForumUser('<%= a.userId?._id %>')"
+                    style="width:40px; height:40px; border-radius:50%; object-fit:cover; cursor:pointer;">
+
+                <% if (user && a.userId && a.userId._id && (user.id===a.userId._id.toString() || user.role==="admin" ))
+                    { %>
+                    <button class="icon-btn" onclick="editReply('<%= a._id %>', '<%= index + 1 %>')">
+                        <img src="/image/icons/edit.svg">
+                    </button>
+                    <% } %>
+
+                        <% if (user && user.role==="admin" ) { %>
+                            <button class="icon-btn" onclick="blockReply('<%= a._id %>', '<%= index + 1 %>')">
+                                <img src="/image/icons/delete.svg">
+                            </button>
+                            <% } %>
+
             </div>
+
 
         </div>
 

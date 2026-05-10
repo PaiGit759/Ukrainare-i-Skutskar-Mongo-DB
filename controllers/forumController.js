@@ -4,6 +4,8 @@ import uploadToR2 from "../helpers/uploadR2.js";
 import deleteFromR2 from "../helpers/deleteR2.js";
 import createPath from "../helpers/create-path.js";
 
+import { sanitizeContent } from "../utils/sanitize.js";
+
 // Post addition form
 export const addForm = (req, res) => {
     res.render("add-forum", {
@@ -13,7 +15,6 @@ export const addForm = (req, res) => {
 };
 
 //Adding a post
-
 export const addPost = async (req, res) => {
     try {
         let photoUrl = null;
@@ -23,15 +24,17 @@ export const addPost = async (req, res) => {
             photoUrl = await uploadToR2(req.file.buffer, fileName, req.file.mimetype);
         }
 
+        // 🔒 Очищаем контент от XSS
+        const safeContent = sanitizeContent(req.body.content);
+
         const post = new Post({
             userId: req.session.user.id,
             title: req.body.title,
-            content: req.body.content,
+            content: safeContent,   // ← безопасный контент
             photo: photoUrl,
             isPinned: req.body.isPinned === "on",
             lastReplyAt: Date.now()
         });
-
 
         await post.save();
 
@@ -41,6 +44,7 @@ export const addPost = async (req, res) => {
         res.send("Error creating post");
     }
 };
+
 
 //Number of posts
 export const getCount = async (req, res) => {
@@ -169,11 +173,14 @@ export const addReply = async (req, res) => {
             photoUrl = await uploadToR2(req.file.buffer, fileName, req.file.mimetype);
         }
 
+        // 🔒 Clearing the response text
+        const safeContent = sanitizeContent(content);
+
         // 1. Create a response
         const reply = new Answer({
             postId,
             userId: req.session.user.id,
-            content,
+            content: safeContent,
             photo: photoUrl
         });
 
@@ -218,10 +225,9 @@ export const viewEditForm = async (req, res) => {
 
 export const updatePost = async (req, res) => {
     try {
-        const { id, content, isPinned } = req.body;
+        const { id, isPinned } = req.body;
 
         const post = await Post.findById(id);
-
         if (!post) return res.send("Post not found");
 
         // Check rights
@@ -230,6 +236,9 @@ export const updatePost = async (req, res) => {
             return res.send("Access denied");
         }
 
+        // 🔒 Cleaning up the content
+        const safeContent = sanitizeContent(req.body.content);
+
         let photoUrl = post.photo;
 
         if (req.file) {
@@ -237,7 +246,8 @@ export const updatePost = async (req, res) => {
             photoUrl = await uploadToR2(req.file.buffer, fileName, req.file.mimetype);
         }
 
-        post.content = content;
+        // 🔒 Keeping content safe
+        post.content = safeContent;
         post.photo = photoUrl;
 
         if (req.session.user.role === "admin") {
@@ -320,14 +330,16 @@ export async function viewReplyEditForm(req, res) {
     }
 }
 
-
 export async function updateReply(req, res) {
     try {
+
+        const safeContent = sanitizeContent(req.body.content);
+
         const replyId = req.body.id;
         const postId = req.body.postId;
 
         const updateData = {
-            content: req.body.content
+            content: safeContent
         };
 
         if (req.file) {
@@ -338,7 +350,7 @@ export async function updateReply(req, res) {
 
         await Answer.findByIdAndUpdate(replyId, updateData);
 
-        // --- ВОССТАНАВЛИВАЕМ ВОЗВРАТ К ОТВЕТУ ---
+        // --- RESTORE THE RETURN TO THE ANSWER ---
         const answers = await Answer.find({ postId }).sort({ createdAt: 1 }).lean();
         const replyNum = answers.findIndex(a => a._id.toString() === replyId) + 1;
 

@@ -223,7 +223,7 @@
                 if (data.isBlocked) {
                     content.innerHTML = `
                     <p class="text-danger fw-bold">
-                        Содержание поста было удалено администратором.
+                        The content of the post has been removed by the administrator.
                     </p>
                 `;
                 } else {
@@ -299,17 +299,17 @@
         }
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const refs = document.querySelectorAll(".reply-ref");
-        const textarea = document.querySelector("textarea[name='content']");
-
-        refs.forEach(ref => {
-            ref.addEventListener("click", () => {
-                textarea.value = textarea.value.trim() + ` (${ref.dataset.ref})`;
-                textarea.focus();
-            });
-        });
-    });
+    /*    document.addEventListener("DOMContentLoaded", () => {
+           const refs = document.querySelectorAll(".reply-ref");
+           const textarea = document.querySelector("textarea[name='content']");
+   
+           refs.forEach(ref => {
+               ref.addEventListener("click", () => {
+                   textarea.value = textarea.value.trim() + ` (${ref.dataset.ref})`;
+                   textarea.focus();
+               });
+           });
+       }); */
 
     // Link clicks (N)
     document.addEventListener("click", (e) => {
