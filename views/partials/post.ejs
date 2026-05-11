@@ -31,12 +31,13 @@
                 <%= post.blockedMessage %>
             </p>
             <% } else { %>
-                <p><%- post.content %></p>
+                <!-- <p><%- post.content %></p> -->
+                <%- post.content.replace(/\n/g, '<br>' ) %>
 
-                <% if (post.photo) { %>
-                    <img src="<%= post.photo %>" class="post-photo mt-2">
-                    <% } %>
+                    <% if (post.photo) { %>
+                        <img src="<%= post.photo %>" class="post-photo mt-2">
                         <% } %>
+                            <% } %>
     </div>
 
 </div>

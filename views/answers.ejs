@@ -51,16 +51,15 @@
 
                 <% } else { %>
 
-                    <p>
-                        <%- a.content.replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>'
-                            ) %>
-                    </p>
 
-                    <% if (a.photo) { %>
-                        <img src="<%= a.photo %>" class="post-photo">
-                        <% } %>
+                    <%- a.content .replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>' )
+                        .replace(/\r?\n/g, '<br>' ) %>
 
+                        <% if (a.photo) { %>
+                            <img src="<%= a.photo %>" class="post-photo">
                             <% } %>
+
+                                <% } %>
 
         </div>
 

@@ -54,11 +54,9 @@
                 <% } else { %>
 
                     <p class="fs-5">
-                        <%- post.content
-                            .replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>' )
-                            .replace(/\n/g, '<br>' ) %>
+                        <%- post.content.replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>'
+                            ) %>
                     </p>
-
 
                     <% if (post.photo) { %>
                         <img src="<%= post.photo %>" class="post-photo">
@@ -119,12 +117,7 @@
 </div>
 
 <!-- JS -->
-
 <script>
-    /* ============================
-       NAVIGATION
-    ============================ */
-
     function openForumUser(id) {
         localStorage.setItem("returnToProfile", location.href);
         window.location.href = `/profile?id=${id}`;
@@ -143,44 +136,26 @@
         localStorage.removeItem("returnToForum");
     }
 
-    function editPost(id) {
-        window.location.href = `/forum/edit?id=${id}`;
-    }
-
-
-    /* ============================
-       INSERT LINK (N)
-    ============================ */
-
+    // Insert Link (N)
     document.addEventListener("DOMContentLoaded", () => {
         const refs = document.querySelectorAll(".reply-ref");
         const textarea = document.querySelector("textarea[name='content']");
 
-        if (textarea) {
-            refs.forEach(ref => {
-                ref.addEventListener("click", () => {
-                    textarea.value = textarea.value.trim() + ` (${ref.dataset.ref})`;
-                    textarea.focus();
-                });
+        refs.forEach(ref => {
+            ref.addEventListener("click", () => {
+                textarea.value = textarea.value.trim() + ` (${ref.dataset.ref})`;
+                textarea.focus();
             });
-        }
+        });
     });
 
-
-    /* ============================
-       AUTO SCROLL TO NEW / EDITED
-    ============================ */
-
+    // Autoscroll to new answer
     document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
-
         const newReply = params.get("newReply");
-        const scrollTo = params.get("scrollTo");
 
-        const target = newReply || scrollTo;
-
-        if (target) {
-            const el = document.getElementById(`post-${target}`);
+        if (newReply) {
+            const el = document.getElementById(`post-${newReply}`);
             if (el) {
                 el.scrollIntoView({ behavior: "smooth", block: "center" });
                 el.classList.add("highlight");
@@ -189,11 +164,22 @@
         }
     });
 
+    // Scroll to edited reply
+    document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const scrollTo = params.get("scrollTo");
 
-    /* ============================
-       FOLLOW REPLY LINKS
-    ============================ */
+        if (scrollTo) {
+            const el = document.getElementById(`post-${scrollTo}`);
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                el.classList.add("highlight");
+                setTimeout(() => el.classList.remove("highlight"), 2000);
+            }
+        }
+    });
 
+    // Follow reply links
     document.addEventListener("click", (e) => {
         if (e.target.classList.contains("reply-link") ||
             e.target.classList.contains("reply-back-link")) {
@@ -209,10 +195,21 @@
         }
     });
 
+    // Clear returnToForum after adding reply
+    document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("newReply")) {
+            localStorage.removeItem("returnToForum");
+        }
+    });
 
-    /* ============================
-       BLOCK POST
-    ============================ */
+    function editReply(id, num) {
+        window.location.href = `/forum/reply/edit?id=${id}&num=${num}`;
+    }
+
+    function editPost(id) {
+        window.location.href = `/forum/edit?id=${id}`;
+    }
 
     function blockPost(id) {
         if (!confirm("Block post?")) return;
@@ -220,46 +217,46 @@
         fetch(`/forum/block?id=${id}`, { method: "POST" })
             .then(res => res.json())
             .then(data => {
+                const block = document.getElementById("post-0");
+                const content = block.querySelector(".post-content");
+
                 if (data.isBlocked) {
-                    const block = document.getElementById("post-0");
-                    const content = block.querySelector(".post-content");
                     content.innerHTML = `
-                        <p class="text-danger fw-bold">
-                            The content of the post has been removed by the administrator.
-                        </p>
-                    `;
+                    <p class="text-danger fw-bold">
+                        The content of the post has been removed by the administrator.
+                    </p>
+                `;
                 } else {
                     reloadPost();
                 }
             });
     }
 
-
-    /* ============================
-       BLOCK REPLY
-    ============================ */
-
-    function blockReply(id, num) {
-        if (!confirm("Block reply?")) return;
+    function blockReply(id) {
+        if (!confirm("Заблокировать ответ?")) return;
 
         fetch(`/forum/reply/block?id=${id}`, { method: "POST" })
             .then(res => res.json())
-            .then(() => reloadSingleReply(id, num));
+            .then(data => {
+                if (data.isBlocked) {
+                    const block = document.getElementById(`post-${id}`);
+                    const content = block.querySelector(".post-content");
+                    content.innerHTML = `
+                    <p class="text-danger fw-bold">
+                        The answer was deleted by the administrator.
+                    </p>
+                `;
+                } else {
+                    reloadSingleReply(id);
+                }
+            });
     }
 
-    function editReply(id, num) {
-        window.location.href = `/forum/reply/edit?id=${id}&num=${num}`;
-    }
-
-
-    /* ============================
-       AJAX RELOAD FUNCTIONS
-    ============================ */
-
-    async function reloadSingleReply(id, num) {
-        const res = await fetch(`/forum/reply/one?id=${id}&num=${num}`);
+    async function reloadSingleReply(id) {
+        const res = await fetch(`/forum/reply/one?id=${id}`);
         const html = await res.text();
-        document.getElementById(`post-${num}`).outerHTML = html;
+
+        document.getElementById(`post-${id}`).outerHTML = html;
     }
 
     async function reloadPost() {
@@ -272,13 +269,73 @@
         document.getElementById("post-0").outerHTML = html;
     }
 
+    function blockReply(id, num) {
+        if (!confirm("Block reply?")) return;
 
-    /* ============================
-       AUTO UPDATE ANSWERS
-    ============================ */
+        fetch(`/forum/reply/block?id=${id}`, { method: "POST" })
+            .then(res => res.json())
+            .then(data => {
+                reloadSingleReply(id, num);
+            });
+    }
 
-    // let lastReplyCount = <%= replyCount %>;
+    async function reloadSingleReply(id, num) {
+        const res = await fetch(`/forum/reply/one?id=${id}&num=${num}`);
+        const html = await res.text();
+
+        document.getElementById(`post-${num}`).outerHTML = html;
+    }
+
+    document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("reply-link")) {
+            const id = e.target.dataset.target; // post-3
+            const el = document.getElementById(id);
+
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                el.classList.add("highlight");
+                setTimeout(() => el.classList.remove("highlight"), 1500);
+            }
+        }
+    });
+
+    // Link clicks (N)
+    document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("reply-link") ||
+            e.target.classList.contains("reply-back-link")) {
+
+            const id = e.target.dataset.target;
+            const el = document.getElementById(id);
+
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                el.classList.add("highlight");
+                setTimeout(() => el.classList.remove("highlight"), 1500);
+            }
+        }
+    });
+
+    // AJAX updating one answer
+    async function reloadSingleReply(id, num) {
+        const res = await fetch(`/forum/reply/one?id=${id}&num=${num}`);
+        const html = await res.text();
+        document.getElementById(`post-${num}`).outerHTML = html;
+    }
+
+    // AJAX updating the main post
+    async function reloadPost() {
+        const url = new URL(window.location.href);
+        const postId = url.searchParams.get("id");
+
+        const res = await fetch(`/forum/post/one?id=${postId}`);
+        const html = await res.text();
+
+        document.getElementById("post-0").outerHTML = html;
+    }
+
+    //   let lastReplyCount = <%= replyCount %>;
     let lastReplyCount = Number("<%= replyCount %>");
+
 
     async function checkReplies() {
         const postId = "<%= post._id %>";
@@ -292,9 +349,11 @@
         }
     }
 
+    // We check every 10 seconds
     setInterval(checkReplies, 10000);
-</script>
 
+
+</script>
 
 <style>
     .forum-user-link {

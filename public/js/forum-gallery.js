@@ -47,9 +47,17 @@ function renderForum(items, page) {
         const div = document.createElement("div");
         div.className = "forum-item";
 
+        /*         let content = post.isBlocked
+                    ? `<span class="text-danger fw-bold">${post.blockedMessage}</span>`
+                    : post.content;
+         */
+
         let content = post.isBlocked
             ? `<span class="text-danger fw-bold">${post.blockedMessage}</span>`
-            : post.content;
+            : post.content
+                .replace(/\n/g, "<br>")
+                .replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>');
+
 
         const isAuthor = String(currentUser.id) === String(post.userId);
         const isAdmin = currentUser.role === "admin";
