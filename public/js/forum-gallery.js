@@ -47,17 +47,11 @@ function renderForum(items, page) {
         const div = document.createElement("div");
         div.className = "forum-item";
 
-        /*         let content = post.isBlocked
-                    ? `<span class="text-danger fw-bold">${post.blockedMessage}</span>`
-                    : post.content;
-         */
-
         let content = post.isBlocked
             ? `<span class="text-danger fw-bold">${post.blockedMessage}</span>`
             : post.content
                 .replace(/\n/g, "<br>")
                 .replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>');
-
 
         const isAuthor = String(currentUser.id) === String(post.userId);
         const isAdmin = currentUser.role === "admin";
@@ -118,10 +112,8 @@ function renderForum(items, page) {
         `;
         const contentDiv = document.createElement("div");
         contentDiv.className = "mb-2";
-        contentDiv.innerHTML = content; // ← HTML остаётся HTML
+        contentDiv.innerHTML = content;
         div.appendChild(contentDiv);
-
-
 
         list.appendChild(div);
     });
@@ -217,7 +209,7 @@ function blockPost(id) {
     })
         .then(res => res.json())
         .then(() => {
-            fetchForumPage(currentPage); // обновляем галерею
+            fetchForumPage(currentPage);
         })
         .catch(err => console.error(err));
 }

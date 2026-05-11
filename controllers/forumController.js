@@ -24,13 +24,13 @@ export const addPost = async (req, res) => {
             photoUrl = await uploadToR2(req.file.buffer, fileName, req.file.mimetype);
         }
 
-        // 🔒 Очищаем контент от XSS
+        // 🔒 We clear the content from XSS
         const safeContent = sanitizeContent(req.body.content);
 
         const post = new Post({
             userId: req.session.user.id,
             title: req.body.title,
-            content: safeContent,   // ← безопасный контент
+            content: safeContent,
             photo: photoUrl,
             isPinned: req.body.isPinned === "on",
             lastReplyAt: Date.now()

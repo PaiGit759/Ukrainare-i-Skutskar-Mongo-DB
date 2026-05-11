@@ -6,10 +6,7 @@
     <div id="post-0" class="post-block bg-light shadow-sm">
 
         <div class="post-header">
-            <!-- <div class="post-number badge bg-primary">0</div> -->
             <div class="post-number badge bg-primary reply-ref" data-ref="0">0</div>
-
-
             <div class="post-user">
                 <% if (post.userId && post.userId._id) { %>
                     <span class="forum-user-link" onclick="openForumUser('<%= post.userId._id %>')">
@@ -58,7 +55,6 @@
                             .replace(/\((\d+)\)/g, '<span class="reply-link" data-target="post-$1">($1)</span>' )
                             .replace(/\n/g, '<br>' ) %>
                     </p>
-
 
                     <% if (post.photo) { %>
                         <img src="<%= post.photo %>" class="post-photo">
@@ -277,7 +273,6 @@
        AUTO UPDATE ANSWERS
     ============================ */
 
-    // let lastReplyCount = <%= replyCount %>;
     let lastReplyCount = Number("<%= replyCount %>");
 
     async function checkReplies() {
