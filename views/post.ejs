@@ -103,7 +103,7 @@
 
                 <%- include("photo-upload", { currentPhoto: null }) %>
 
-                    <div class="d-flex gap-2 mb-4">
+                    <div class="d-flex gap-2 mb-4" style="margin-bottom: 30px;">
                         <button class="btn btn-primary px-4 py-2">Answer</button>
                         <button type="button" class="btn btn-secondary px-4 py-2" onclick="goBackToForum()">←
                             Back</button>
@@ -243,7 +243,7 @@
                     const content = block.querySelector(".post-content");
                     content.innerHTML = `
                     <p class="text-danger fw-bold">
-                        Ответ был удалён администратором.
+                        The answer was deleted by the administrator.
                     </p>
                 `;
                 } else {
@@ -299,18 +299,6 @@
         }
     });
 
-    /*    document.addEventListener("DOMContentLoaded", () => {
-           const refs = document.querySelectorAll(".reply-ref");
-           const textarea = document.querySelector("textarea[name='content']");
-   
-           refs.forEach(ref => {
-               ref.addEventListener("click", () => {
-                   textarea.value = textarea.value.trim() + ` (${ref.dataset.ref})`;
-                   textarea.focus();
-               });
-           });
-       }); */
-
     // Link clicks (N)
     document.addEventListener("click", (e) => {
         if (e.target.classList.contains("reply-link") ||
@@ -359,7 +347,7 @@
         }
     }
 
-    // Проверяем каждые 10 секунд
+    // We check every 10 seconds
     setInterval(checkReplies, 10000);
 
 
