@@ -194,7 +194,7 @@ export const getEditUser = async (req, res) => {
 };
 
 // UPDATE USER
-export const updateUser = async (req, res) => {
+/* export const updateUser = async (req, res) => {
     const id = req.body.id;
 
     const oldUser = await User.findById(id);
@@ -231,6 +231,66 @@ export const updateUser = async (req, res) => {
 
     res.redirect(`/profile?id=${id}`);
 };
+ */
+
+
+export const updateUser = async (req, res) => {
+    const id = req.body.id;
+
+    const oldUser = await User.findById(id);
+    if (!oldUser) return res.send("User not found");
+
+    let fotoUrl = oldUser.foto;
+
+    if (req.file) {
+        if (oldUser.foto) await deleteFromR2(oldUser.foto);
+
+        const fileName = `${Date.now()}_${req.file.originalname}`;
+        fotoUrl = await uploadToR2(req.file.buffer, fileName, req.file.mimetype);
+    }
+
+    const updateData = {
+        name: req.body.name,
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        birthDate: req.body.birthDate,
+        gender: req.body.gender,
+        birthPlace: req.body.birthPlace,
+        residence: req.body.residence,
+        content: req.body.content,
+        foto: fotoUrl
+    };
+
+    // Если введён новый пароль — хешируем
+    if (req.body.password && req.body.password.trim() !== "") {
+        const bcrypt = await import("bcrypt");
+        updateData.password = await bcrypt.hash(req.body.password, 10);
+    }
+
+    //const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true });
+
+    const updatedUser = await User.findByIdAndUpdate(
+        id,
+        updateData,
+        { returnDocument: "after" }
+    );
+
+    // Обновляем сессию
+    if (req.session?.user?.id === id) {
+        req.session.user = {
+            id: updatedUser._id.toString(),
+            name: updatedUser.name,
+            email: updatedUser.email,
+            role: updatedUser.role,
+            foto: updatedUser.foto
+        };
+    }
+
+    res.redirect(`/profile?id=${id}`);
+};
+
+
 
 // DELETE USER
 export const deleteUser = async (req, res) => {
